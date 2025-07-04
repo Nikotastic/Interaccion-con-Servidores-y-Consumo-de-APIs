@@ -13,7 +13,7 @@ const Toast = Swal.mixin({
   },
 });
 
-// MENSAJE BUENO
+// GOOD MESSAGE
 export function alertSuccess(message) {
     Toast.fire({
       icon: "success",
@@ -21,7 +21,7 @@ export function alertSuccess(message) {
     });
 }
 
-// MENSAJE DE ERROR (ALERT)
+// ERROR MESSAGE (ALERT)
 export function alertError(message) {
     Toast.fire({
       icon: "error",
@@ -29,23 +29,23 @@ export function alertError(message) {
     });
 }
 
-export async function confirmDelete(message = "¿Seguro que quieres eliminar este producto?") {
-  const swalWithBootstrapButtons = Swal.mixin({
+// DELETE MESSAGE
+export async function confirmDelete(message = "Are you sure you want to delete this product?") {
+  const swalWithTailwindButtons = Swal.mixin({
     customClass: {
-      confirmButton: "btn btn-success",
-      cancelButton: "btn btn-danger"
-    },
-    buttonsStyling: false
+      confirmButton: 'bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 focus:outline-none',
+      cancelButton: 'bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 focus:outline-none',
+    }
   });
 
-  const result = await swalWithBootstrapButtons.fire({
-    title: "¿Estás seguro?",
+  const result = await swalWithTailwindButtons.fire({
+    title: 'Are you sure?',
     text: message,
-    icon: "warning",
+    icon: 'warning',
     showCancelButton: true,
-    confirmButtonText: "Sí, eliminar",
-    cancelButtonText: "Cancelar",
-    reverseButtons: true
+    confirmButtonText: 'Yes, delete',
+    cancelButtonText: 'Cancel',
+    reverseButtons: true,
   });
 
   return result;

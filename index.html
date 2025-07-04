@@ -1,67 +1,105 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="PatientManager es una aplicación web para gestionar productos usando JSON Server, Fetch API o Axios, y Bootstrap. Diseñada para practicar consumo de API RESTful." />
+  <meta name="description" content="Gestion de api es una aplicación web para gestionar productos usando JSON Server, Fetch API, y Tailwindcss. Diseñada para practicar consumo de API RESTful." />
   <meta name="keywords" content="gestión de productos, json-server, fetch, axios, rest api, práctica frontend" />
-  <meta name="organization" content="Riwi" />
   <meta name="author" content="Nikol Velasquez" />
   <meta name="designer" content="Nikol Velasquez" />
-  <meta name="copyright" content="© 2025 Riwi. Todos los derechos reservados" />
+  <meta name="copyright" content="© 2025 Nikol Velasquez. Todos los derechos reservados" />
   <meta name="theme-color" content="#ffffff" />
   <meta name="robots" content="index,follow" />
   <meta name="googlebot" content="index,follow" />
   <meta name="revisit-after" content="15days" />
-  <link rel="stylesheet" href="./src/css/style.css" />
-  <title>Administrador de Productos</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./src/css/styles.css">
+  <title>Product Manager</title>
 </head>
-<body>
-  <header>
-    <h1>Administrador de Productos</h1>
+
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+<!-- Application header -->
+  <header class="bg-blue-600 text-white py-6 shadow-md">
+    <h1 class="text-2xl sm:text-3xl font-bold text-center">Product Manager</h1>
   </header>
 
-  <main>
-    <section aria-labelledby="form-title">
-      <h2 id="form-title">Registrar nuevo producto</h2>
-      <form>
-        <fieldset>
-          <legend>Datos del producto</legend>
+  <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-          <label for="name">Nombre del producto</label>
-          <input id="name" type="text" placeholder="Escribe el nombre del producto" required />
+    <!-- Section of the form to register products -->
+    <section aria-labelledby="form-title" class="mb-10">
+      <h2 id="form-title" class="text-xl sm:text-2xl font-semibold mb-4 text-blue-700 text-center">Register new product</h2>
 
-          <label for="category">Categoría</label>
-          <input id="category" type="text" placeholder="Ej. Tecnología, Hogar..." required />
+     <!-- Product Entry Form -->
+      <form class="bg-white p-4 sm:p-6 rounded-lg shadow-md space-y-4 max-w-3xl mx-auto">
+        <fieldset class="space-y-4">
+          <legend class="text-lg font-medium text-gray-700">Product data</legend>
 
-          <label for="price">Precio</label>
-          <input id="price" type="number" placeholder="Escribe el precio" required />
+          <!-- Field: Product Name -->
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700">Product name</label>
+            <input id="name" type="text" placeholder="Write the name of the product" required
+              class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+          </div>
 
-          <label for="quantity">Cantidad</label>
-          <input id="quantity" type="number" placeholder="Cantidad disponible" required />
+         <!-- Field: Category -->
+          <div>
+            <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+            <input id="category" type="text" placeholder="Example: Technology, Home..." required
+              class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+          </div>
 
-          <label for="description">Descripción</label>
-          <textarea id="description" placeholder="Escribe una descripción del producto" required></textarea>
+          <!-- Fields: Price and Quantity -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
+              <input id="price" type="number" placeholder="Write the price" required
+                class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+            </div>
 
+            <div>
+              <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
+              <input id="quantity" type="number" placeholder="Available quantity" required
+                class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300" />
+            </div>
+          </div>
+
+          <!-- Field: Description -->
+          <div>
+            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+            <textarea id="description" placeholder="Write a product description"
+              class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"></textarea>
+          </div>
+
+          <!-- Hidden field to edit product -->
           <input type="hidden" id="idEdit">
-          <button type="submit" id="btnSave">Guardar</button>
-          <button type="button" id="btnCancelEdit" style="display: none;">Cancelar edición</button>
+
+          <!-- Button to save product -->
+          <div class="flex flex-wrap gap-3">
+            <button type="submit" id="btnSave"
+              class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition text-sm w-[100%] mx-auto ">
+              Save
+            </button>
+          </div>
         </fieldset>
-      </form>
+      </form> 
     </section>
 
+   <!-- Section to display product cards -->
     <section aria-labelledby="admin-title">
-      <h2 id="admin-title">Administrar productos</h2>
-      <div id="productsShow">
+      <h2 id="admin-title" class="text-xl sm:text-2xl font-semibold mb-4 text-blue-700 text-center">Manage products</h2>
 
+     <!-- Container where product cards are inserted with JS -->
+      <div id="productsShow" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       </div>
     </section>
   </main>
 
-  <footer>
-    <p>&copy; 2025 Riwi. Todos los derechos reservados.</p>
+ <!-- Footer -->
+  <footer class="bg-blue-600 text-white text-center py-4 text-sm">
+    <p>&copy; 2025 Riwi. All rights reserved</p>
   </footer>
-
-  <script type="module" src="./src/js/main.js"></script>
+  <script type="module" src="./src/js/gestion_api.js"></script>
 </body>
 </html>

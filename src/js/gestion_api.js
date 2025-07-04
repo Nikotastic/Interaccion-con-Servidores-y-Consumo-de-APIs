@@ -1,7 +1,7 @@
 import { alertError, alertSuccess, confirmDelete } from "./alerts";
-const endpointProducts = "http://localhost:3000/products";
 
-// Elementos del DOM
+// JSON Server endpoint URL
+const endpointProducts = "http://localhost:3000/products";
 const $name = document.getElementById("name");
 const $category = document.getElementById("category");
 const $price = document.getElementById("price");
@@ -11,12 +11,11 @@ const $idEdit = document.getElementById("idEdit");
 const $form = document.querySelector("form");
 const $productsShow = document.getElementById("productsShow");
 
-// Evento del formulario
+// Form event: decides whether to create or update a product
 $form.addEventListener("submit", (event) => {
   event.preventDefault();
-  createOrUpdateProduct(); // Decide si crear o actualizar
+  createOrUpdateProduct();
 });
-
 
 // READ
 async function listProducts() {
@@ -24,41 +23,57 @@ async function listProducts() {
     const response = await fetch(endpointProducts);
     const products = await response.json();
 
-    $productsShow.innerHTML = "";
+    $productsShow.innerHTML = ""; // Clean before
 
     if (products.length === 0) {
-      $productsShow.innerHTML = "<p>No hay productos registrados.</p>";
+      $productsShow.innerHTML = `
+  <p class="col-span-full w-full text-center text-gray-500  mt-6">
+    There are no registered products
+  </p>
+`;
+
       return;
     }
 
+    // Create card for each product
     for (let product of products) {
       const productCard = document.createElement("div");
       productCard.classList.add("product-card");
 
+      // Card structure in the form of a mini table
       productCard.innerHTML = `
-        <h3>Nombre: ${product.name}</h3>
-        <p><strong>Categoría:</strong> ${product.category}</p>
-        <p><strong>Precio:</strong> $${product.price}</p>
-        <p><strong>Cantidad:</strong> ${product.quantity}</p>
-        <p><strong>Descripción:</strong> ${product.description}</p>
-        <button data-id="${product.id}" class="btn-edit">Editar</button>
-        <button data-id="${product.id}" class="btn-delete">Eliminar</button>
+        <div class="bg-white p-4 rounded-lg shadow-md w-10/12 mx-auto">
+          <h3 class="text-xl font-semibold text-blue-700 mb-4 text-center">${product.name}</h3>
+          <table class="table-auto w-full text-left text-gray-700">
+            <tbody>
+              <tr><th class="pr-4">Category:</th><td>${product.category}</td></tr>
+              <tr><th class="pr-4">Price:</th><td>$${product.price}</td></tr>
+              <tr><th class="pr-4">Quantity:</th><td>${product.quantity} unidades</td></tr>
+              <tr><th class="pr-4">Description:</th><td>${product.description}</td></tr>
+            </tbody>
+          </table>
+          <div class="flex justify-center gap-3 mt-4">
+            <button class="w-1/5 bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition btn-edit" data-id="${product.id}">Edit</button>
+            <button class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition btn-delete" data-id="${product.id}">Remove</button>
+          </div>
+        </div>
       `;
 
       $productsShow.appendChild(productCard);
     }
 
-    setEventListeners(); // Vincular eventos a botones
+    setEventListeners(); // Assign events to the new buttons
   } catch (e) {
     console.error("Error al listar productos:", e);
     $productsShow.innerHTML = "<p>Error al cargar productos.</p>";
   }
 }
 
-
-//  CREATE OR UPDATE
+// CREATE / UPDATE
 async function createOrUpdateProduct() {
   const id = $idEdit.value;
+
+  // Get the values ​​from the form
   const productData = {
     name: $name.value.trim(),
     category: $category.value.trim(),
@@ -67,20 +82,24 @@ async function createOrUpdateProduct() {
     description: $description.value.trim(),
   };
 
-  // Validaciones
+  // Field validations
   if (!productData.name || !productData.category || !productData.description) {
     return alertError("Todos los campos de texto son obligatorios.");
   }
+
   if (isNaN(productData.price) || productData.price <= 0) {
     return alertError("El precio debe ser un número mayor que 0.");
   }
+
   if (isNaN(productData.quantity) || productData.quantity < 0) {
-    return alertError("La cantidad debe ser un número entero mayor o igual a 0.");
+    return alertError(
+      "La cantidad debe ser un número entero mayor o igual a 0."
+    );
   }
 
   try {
     if (id) {
-      //  UPDATE 
+      // UPDATE - If there is an ID, the product is updated
       const response = await fetch(`${endpointProducts}/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -90,8 +109,12 @@ async function createOrUpdateProduct() {
       if (!response.ok) throw new Error("Error al actualizar");
       alertSuccess("Producto actualizado correctamente.");
     } else {
-      //  CREATE 
-      const checkResponse = await fetch(`${endpointProducts}?nameLike=^${productData.name}$`);
+      // CREATE - If there is an ID, the product is updated
+
+      // Check for duplicate by name
+      const checkResponse = await fetch(
+        `${endpointProducts}?nameLike=^${productData.name}$`
+      );
       const existingProducts = await checkResponse.json();
 
       const duplicate = existingProducts.find(
@@ -102,6 +125,7 @@ async function createOrUpdateProduct() {
         return alertError(`El producto "${productData.name}" ya existe.`);
       }
 
+      // Create product
       const response = await fetch(endpointProducts, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -112,6 +136,7 @@ async function createOrUpdateProduct() {
       alertSuccess("Producto creado exitosamente.");
     }
 
+    // Clear form and load list
     $form.reset();
     $idEdit.value = "";
     listProducts();
@@ -121,13 +146,14 @@ async function createOrUpdateProduct() {
   }
 }
 
+// EDIT
 
-// EDIT 
 async function editProduct(id) {
   try {
     const response = await fetch(`${endpointProducts}/${id}`);
     const product = await response.json();
 
+    // Load data into the form
     $name.value = product.name;
     $category.value = product.category;
     $price.value = product.price;
@@ -142,8 +168,8 @@ async function editProduct(id) {
   }
 }
 
+// DELETE - Eliminar producto con confirmación
 
-// DELETE 
 async function deleteProduct(id) {
   const result = await confirmDelete();
 
@@ -163,7 +189,7 @@ async function deleteProduct(id) {
   }
 }
 
-
+// Assign events to the edit and delete buttons
 function setEventListeners() {
   const deleteButtons = document.querySelectorAll(".btn-delete");
   const editButtons = document.querySelectorAll(".btn-edit");
@@ -183,4 +209,5 @@ function setEventListeners() {
   });
 }
 
+// Call the function to load products on startup
 listProducts();

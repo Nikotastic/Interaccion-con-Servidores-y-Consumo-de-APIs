@@ -16,7 +16,6 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.11",
     "json-server": "^1.0.0-beta.3",
-    "sweetalert2": "^11.22.2",
-    "tailwindcss": "^4.1.11"
+    "sweetalert2": "^11.22.2"
   }
 }
