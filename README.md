@@ -34,8 +34,9 @@ npx json-server public/database.json
 
 5. Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-## Project structure
 
+## Project structure
+```
 product-management/
 ├── node_modules/
 ├── public/
@@ -52,7 +53,7 @@ product-management/
 ├── package.json
 ├── package-lock.json
 └── README.md
-
+```
 ## Main Dependencies
 
 - [Vite](https://vitejs.dev/)
@@ -62,13 +63,14 @@ product-management/
 
 ## Author
 
-- Coder Information
+# Coder Information
 
 Name: Nikol Velasquez
 
 Clan: Sierra
 
 Email: velasqueznikol10@gmail.com
+
 ---
 
 © 2025 Nikol Velasquez. All rights reserved
