@@ -1,0 +1,12 @@
+{
+  "products": [
+    {
+      "id": "80ed",
+      "name": "amks",
+      "category": "juguete",
+      "price": 20000,
+      "quantity": 1,
+      "description": "none"
+    }
+  ]
+}
